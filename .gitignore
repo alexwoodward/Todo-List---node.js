@@ -59,3 +59,6 @@ typings/
 
 #ignore PHPStorm files
 .idea/
+
+#ignore sequal pro stuff
+table_query1.spf
