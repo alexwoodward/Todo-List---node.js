@@ -23,36 +23,61 @@ module.exports = function(app) {
 			console.log("error" + err);
 			connection.query('SELECT * FROM todos_list', function (err, rows) {
 				// And done with the connection.
-				connection.release();
+				console.log(rows);
+				response.render('todo', {todos: rows});
 				// Don't use the connection here, it has been returned to the pool.
 			});
 		});
-
-// The pool will emit a connection event when a new connection is made within the pool.
-		pool.on('connection', function (connection) {
-			console.log("Connected");
-			// Set a session variable
-			var todos = connection.query('SELECT * FROM todos_list');
-			todos.on('todo', function (todo) {
-				response.render(todo);
-			});
-			connection.query('SET SESSauto_increment_increment=1')
-		});
 	});
-    app.post('/todo', urlencodedParser, function(request, response) {
-        data.push(request.body);
-        response.json(data);
+
+	app.get('/', function(request, response) {
+		response.render('homepage')
+	});
+
+	app.get('/whiteboard', function(request, response) {
+		response.render('whiteboard')
+	});
+
+    app.post('/todo', urlencodedParser, function(request, response) { // insert database stuff
+	    pool.getConnection(function (err, connection) {
+		    // Use the connection
+		    console.log(request.body);
+		    connection.query('INSERT INTO todos_list VALUES (?)', request.body.item, function (err, rows) {
+			    console.log(rows);
+			    console.log("error" + err);
+		        response.end();
+		    });
+	    });
+        //my_db.push(request.body);
+        //response.json(data);
     });
 
     app.delete('/todo/:item', function(request, response) {
+// auto increment , delete by id
+	    pool.getConnection(function (err, connection) {
+		    // Use the connection
+		    console.log(request.body);
+		    console.log(request.params.item);
+		    connection.query('DELETE FROM todos_list WHERE todo = ?', request.params.item, function (err, rows) {
+			    console.log(rows);
+			    console.log("error" + err);
+			    response.end();
+		    });
+	    });
+    });
+};
+// look up data attributes, sql auto incrementing ids
+// - put data attribute with data id on every row
+// - delete based on data attribute instead of name
+// change inserts, have two rows now
+
+
+/*
         data = data.filter(function (todo) {
             return todo.item.replace(/ /g, '-') !== request.params.item;        // deletes when returns false
         });
         response.json(data);
-    });
-};
-
-/*    app.get('/todo', function(request, response) {
+    app.get('/todo', function(request, response) {
  response.render('todo', {todos: data});
  });
  */

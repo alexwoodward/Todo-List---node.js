@@ -10,6 +10,7 @@
     <script src="/todo-list.js"></script>
 </head>
 <body>
+<% include partials/nav.ejs %>
 <h1>My Todo List</h1>
 <div id="todo-table">
     <form>
@@ -18,13 +19,9 @@
     </form>
     <ul>
         <% for(var i=0; i < todos.length; i++) { %>
-        <li><%= todos[i].item %></li>
+        <li><%= todos[i].todo %></li>
         <% }; %>
     </ul>
 </div>
 </body>
 </html>
-
-<!--
-<link href="/todo-list.js" rel="script" type="text/css"/>
--->
