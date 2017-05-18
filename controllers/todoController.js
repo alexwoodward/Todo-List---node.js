@@ -8,6 +8,14 @@ var urlencodedParser = bodyParser.urlencoded({extended: false});
 
 module.exports = function(app) {
 
+    app.get('/', function(request, response) {
+        response.render('homepage')
+    });
+
+    app.get('/whiteboard', function(request, response) {
+        response.render('whiteboard')
+    });
+
     app.get('/todo', function(request, response) {
         response.render('todo', {todos: data});
     });
